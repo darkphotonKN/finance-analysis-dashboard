@@ -25,6 +25,15 @@ func NewUserService(userRepository UserRepository) UserService {
 
 func (s *userService) UserSignup(createUserReq CreateUserReq) (*models.User, error) {
 
+	// find user from database
+	user, err := s.userRepository.FindByEmail(createUserReq.Email)
+
+	fmt.Printf("user %+v:", user)
+
+	if user != nil {
+		return user, fmt.Errorf("User already has an account.")
+	}
+
 	newUser := models.User{
 		FirstName: createUserReq.FirstName,
 		LastName:  createUserReq.LastName,

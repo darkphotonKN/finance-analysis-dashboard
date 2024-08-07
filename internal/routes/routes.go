@@ -47,6 +47,7 @@ func SetupRouter() *gin.Engine {
 		userRoutes := api.Group("/user")
 		{
 			userRoutes.POST("/signup", userController.SignUp)
+			userRoutes.POST("/signin", userController.SignIn)
 		}
 
 	}

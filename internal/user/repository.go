@@ -29,11 +29,10 @@ func (r *userRepository) CreateUser(user *models.User) (*models.User, error) {
 
 	if err := r.db.Create(user).Error; err != nil {
 
-		return user, nil
+		return nil, err
 	}
 
 	return user, nil
-
 }
 
 // Find User By Id
@@ -52,7 +51,7 @@ func (r *userRepository) FindByEmail(email string) (*models.User, error) {
 	var user models.User
 
 	if err := r.db.Where("email = ?", email).First(&user).Error; err != nil {
-		return &models.User{}, err
+		return nil, err
 	}
 
 	return &user, nil

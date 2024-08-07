@@ -13,6 +13,7 @@ import (
 
 type UserController interface {
 	SignUp(c *gin.Context)
+	SignIn(c *gin.Context)
 }
 
 type userController struct {
