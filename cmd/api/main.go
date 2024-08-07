@@ -2,8 +2,9 @@ package main
 
 import (
 	// "fmt"
+	"fmt"
 	"log"
-	// "os"
+	"os"
 
 	"github.com/darkphotonKN/finance-analysis-dashboard/internal/routes"
 	"github.com/joho/godotenv"
@@ -20,9 +21,12 @@ func main() {
 	router := routes.SetupRouter()
 
 	// run the server
-	// port := os.Getenv("APP_PORT")
+	portNo := os.Getenv("APP_PORT")
+	port := fmt.Sprintf(":%s", portNo)
 
-	err = router.Run(":8000")
+	fmt.Println("port:", port)
+
+	err = router.Run(port)
 
 	if err != nil {
 		log.Fatalf("Server could not start %v", err)

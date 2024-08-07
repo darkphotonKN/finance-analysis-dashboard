@@ -4,10 +4,12 @@ import (
 	"log"
 	"time"
 
-	"github.com/darkphotonKN/finance-analysis-dashboard/internal/controllers"
+	"github.com/darkphotonKN/finance-analysis-dashboard/internal/database"
+	"github.com/darkphotonKN/finance-analysis-dashboard/internal/user"
 	"github.com/gin-gonic/gin"
 )
 
+// Logger Setup
 func LoggerMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
@@ -17,16 +19,37 @@ func LoggerMiddleware() gin.HandlerFunc {
 	}
 }
 
+// Router Setup
 func SetupRouter() *gin.Engine {
-	r := gin.Default()
+
+	router := gin.Default()
 
 	// *** MIDDLEWARE ***
-	r.Use(LoggerMiddleware())
+	router.Use(LoggerMiddleware())
+
+	db := database.InitDB()
+
+	if db == nil {
+		log.Fatalf("DB instance could not be established, DB: %v\n", db)
+	}
+
+	// User DI
+	userRepo := user.NewUserRepository(db)
+	userService := user.NewUserService(userRepo)
+	userController := user.NewUserController(userService)
 
 	// *** ROUTES ***
 
-	// -- User Routes --
-	r.POST("/api/signup", controllers.SignUp)
+	api := router.Group("/api")
+	{
 
-	return r
+		// -- User Routes --
+		userRoutes := api.Group("/user")
+		{
+			userRoutes.POST("/signup", userController.SignUp)
+		}
+
+	}
+
+	return router
 }
