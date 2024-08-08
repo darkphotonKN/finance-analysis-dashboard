@@ -61,12 +61,12 @@ func (ctrl *userController) SignIn(c *gin.Context) {
 		return
 	}
 
-	user, err := ctrl.userService.AuthenticateUser(req)
+	authenticatedInfo, err := ctrl.userService.AuthenticateUser(req)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Error while authenticating:": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusAccepted, gin.H{"message:": "Success. User Authenticated.", "data": user})
+	c.JSON(http.StatusOK, gin.H{"message:": "Success. User Authenticated.", "data": authenticatedInfo})
 }

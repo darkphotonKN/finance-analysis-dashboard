@@ -41,16 +41,11 @@ func SetupRouter() *gin.Engine {
 	// *** ROUTES ***
 
 	api := router.Group("/api")
-	{
 
-		// -- User Routes --
-		userRoutes := api.Group("/user")
-		{
-			userRoutes.POST("/signup", userController.SignUp)
-			userRoutes.POST("/signin", userController.SignIn)
-		}
-
-	}
+	// -- User Routes --
+	userRoutes := api.Group("/user")
+	userRoutes.POST("/signup", userController.SignUp)
+	userRoutes.POST("/signin", userController.SignIn)
 
 	return router
 }
