@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/darkphotonKN/finance-analysis-dashboard/internal/database"
+	"github.com/darkphotonKN/finance-analysis-dashboard/internal/middleware"
 	"github.com/darkphotonKN/finance-analysis-dashboard/internal/user"
 	"github.com/gin-gonic/gin"
 )
@@ -21,7 +22,6 @@ func LoggerMiddleware() gin.HandlerFunc {
 
 // Router Setup
 func SetupRouter() *gin.Engine {
-
 	router := gin.Default()
 
 	// *** MIDDLEWARE ***
@@ -33,19 +33,29 @@ func SetupRouter() *gin.Engine {
 		log.Fatalf("DB instance could not be established, DB: %v\n", db)
 	}
 
-	// User DI
+	// *** Dependency Injection ***
+
+	// -- User --
 	userRepo := user.NewUserRepository(db)
 	userService := user.NewUserService(userRepo)
 	userController := user.NewUserController(userService)
 
 	// *** ROUTES ***
 
+	// -- Base --
 	api := router.Group("/api")
 
-	// -- User Routes --
+	// -- User --
+
+	// public routes
 	userRoutes := api.Group("/user")
 	userRoutes.POST("/signup", userController.SignUp)
 	userRoutes.POST("/signin", userController.SignIn)
+
+	// protected routes
+	userRoutes.GET("/", middleware.JWTAuthMiddleware(), userController.FindAllUsers)
+
+	// -- Finance --
 
 	return router
 }

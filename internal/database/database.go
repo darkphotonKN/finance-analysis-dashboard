@@ -8,6 +8,7 @@ import (
 	"github.com/darkphotonKN/finance-analysis-dashboard/internal/shared/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 // Initializes Database and Provides DB Instance to Application
@@ -24,7 +25,9 @@ func InitDB() *gorm.DB {
 
 	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", dbuser, dbpassword, dbhost, dbport, dbname, dbsslmode)
 
-	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info), // debug logging for sql queries
+	})
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}

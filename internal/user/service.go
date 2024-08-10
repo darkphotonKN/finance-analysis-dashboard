@@ -11,6 +11,7 @@ import (
 type UserService interface {
 	UserSignup(CreateUserReq) (*models.User, error)
 	AuthenticateUser(userSignInReq UserSignInReq) (UserSignInRes, error)
+	FindAllUsers(page int, pageSize int, keyword string, sort string, order constants.SortOrder) (*[]models.User, error)
 }
 
 type userService struct {
@@ -25,7 +26,6 @@ func NewUserService(userRepository UserRepository) UserService {
 }
 
 func (s *userService) UserSignup(createUserReq CreateUserReq) (*models.User, error) {
-
 	// find user from database
 	user, err := s.userRepository.FindByEmail(createUserReq.Email)
 
@@ -67,9 +67,9 @@ func (s *userService) AuthenticateUser(userSignInReq UserSignInReq) (UserSignInR
 	}
 
 	// authenticate password
-	hashIncPw := auth.HashPassword(userSignInReq.Password)
+	hashReqPW := auth.HashPassword(userSignInReq.Password)
 
-	if hashIncPw != user.Password {
+	if hashReqPW != user.Password {
 		return UserSignInRes{}, fmt.Errorf("Password was incorrect.")
 	}
 
@@ -91,4 +91,13 @@ func (s *userService) AuthenticateUser(userSignInReq UserSignInReq) (UserSignInR
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}, nil
+}
+
+/**
+* Finds All Users
+**/
+
+func (s *userService) FindAllUsers(page int, pageSize int, keyword string, sort string, order constants.SortOrder) (*[]models.User, error) {
+
+	return s.userRepository.FindAllUsers(page, pageSize, keyword, sort, order)
 }

@@ -22,7 +22,15 @@ type UserSignInRes struct {
 
 type UserRes struct {
 	FirstName string             `json:"firstName"`
-	Email     string             `json:"email"`
 	LastName  string             `json:"lastName"`
+	Email     string             `json:"email"`
 	Role      constants.UserRole `json:"role"`
+}
+
+type QueryFindAllUsers struct {
+	Page     int                 `json:"page"`
+	PageSize int                 `json:"pageSize"`
+	Keyword  string              `json:"keyword"`
+	Sort     string              `json:"sort"`
+	Order    constants.SortOrder `json:"order"`
 }
